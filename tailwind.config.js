@@ -1,10 +1,13 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
-  content: [],
   theme: {
-    extend: {},
-  },
-  plugins: [],
+    extend: {
+      fontFamily: {
+        sans: ["'Inter'", "sans-serif"]
+      }
+    }
+  }
 }
 
 module.exports = {
@@ -12,3 +15,4 @@ module.exports = {
   theme: { extend: {} },
   plugins: [],
 }
+

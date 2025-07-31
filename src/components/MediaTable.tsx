@@ -1,59 +1,51 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from "react";
+import type { MediaItem } from "../types";
 
-type MediaItem = {
-  id: number;
-  title: string;
-  type: string;
-  director: string;
-  budget: string;
-  location: string;
-  duration: string;
-  yearTime: string;
+interface Props {
+  mediaList: MediaItem[];
+}
+
+const MediaTable: React.FC<Props> = ({ mediaList }) => {
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white shadow rounded text-sm">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="px-4 py-2 text-left">ID</th>
+            <th className="px-4 py-2 text-left">Title</th>
+            <th className="px-4 py-2 text-left">Type</th>
+            <th className="px-4 py-2 text-left">Director</th>
+            <th className="px-4 py-2 text-left">Budget</th>
+            <th className="px-4 py-2 text-left">Location</th>
+            <th className="px-4 py-2 text-left">Duration</th>
+            <th className="px-4 py-2 text-left">Year</th>
+            <th className="px-4 py-2 text-left">Created</th>
+            <th className="px-4 py-2 text-left">Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {mediaList.map((item) => (
+            <tr key={item.id} className="border-t hover:bg-gray-50">
+              <td className="px-4 py-2">{item.id}</td>
+              <td className="px-4 py-2">{item.title}</td>
+              <td className="px-4 py-2">{item.type}</td>
+              <td className="px-4 py-2">{item.director}</td>
+              <td className="px-4 py-2">{item.budget}</td>
+              <td className="px-4 py-2">{item.location}</td>
+              <td className="px-4 py-2">{item.duration}</td>
+              <td className="px-4 py-2">{item.yearTime}</td>
+              <td className="px-4 py-2">
+                {new Date(item.createdAt).toLocaleString()}
+              </td>
+              <td className="px-4 py-2">
+                {new Date(item.updatedAt).toLocaleString()}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
-export default function MediaTable({ reload }: { reload: boolean }) {
-  const [data, setData] = useState<MediaItem[]>([]);
-
-  const fetchData = async () => {
-    const res = await axios.get('http://localhost:3000/api/media?page=1&size=100');
-    setData(res.data);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [reload]);
-
-  const handleDelete = async (id: number) => {
-    if (confirm('Are you sure to delete?')) {
-      await axios.delete(`http://localhost:3000/api/media/${id}`);
-      fetchData();
-    }
-  };
-
-  return (
-    <table className="w-full border">
-      <thead>
-        <tr className="bg-gray-100">
-          <th>Title</th><th>Type</th><th>Director</th><th>Budget</th><th>Location</th><th>Duration</th><th>Year/Time</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map(item => (
-          <tr key={item.id} className="text-center border-t">
-            <td>{item.title}</td>
-            <td>{item.type}</td>
-            <td>{item.director}</td>
-            <td>{item.budget}</td>
-            <td>{item.location}</td>
-            <td>{item.duration}</td>
-            <td>{item.yearTime}</td>
-            <td>
-              <button onClick={() => handleDelete(item.id)} className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
+export default MediaTable;

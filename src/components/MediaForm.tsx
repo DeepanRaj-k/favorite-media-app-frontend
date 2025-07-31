@@ -1,41 +1,126 @@
-import { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
-export default function MediaForm({ refreshList }: { refreshList: () => void }) {
-  const [form, setForm] = useState({
-    title: '',
-    type: 'Movie',
-    director: '',
-    budget: '',
-    location: '',
-    duration: '',
-    yearTime: '',
+interface Props {
+  onAdd: () => void;
+}
+
+const MediaForm: React.FC<Props> = ({ onAdd }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    type: "",
+    director: "",
+    budget: "",
+    location: "",
+    duration: "",
+    yearTime: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axios.post('http://localhost:3000/api/media', form);
-    setForm({ title: '', type: 'Movie', director: '', budget: '', location: '', duration: '', yearTime: '' });
-    refreshList();
+    try {
+      await axios.post("http://localhost:3000/api/media", formData);
+      setFormData({
+        title: "",
+        type: "",
+        director: "",
+        budget: "",
+        location: "",
+        duration: "",
+        yearTime: ""
+      });
+      onAdd();
+    } catch (error) {
+      console.error("Submit error:", error);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mb-4 grid grid-cols-2 gap-4">
-      <input name="title" value={form.title} onChange={handleChange} className="border p-2" placeholder="Title" required />
-      <select name="type" value={form.type} onChange={handleChange} className="border p-2">
-        <option value="Movie">Movie</option>
-        <option value="TV Show">TV Show</option>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white shadow-xl p-6 rounded-xl grid gap-4 md:grid-cols-2"
+    >
+      {/* Title */}
+      <input
+        name="title"
+        placeholder="Title"
+        value={formData.title}
+        onChange={handleChange}
+        className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none"
+      />
+
+      {/* Type Dropdown */}
+      <select
+        name="type"
+        value={formData.type}
+        onChange={handleChange}
+        className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none"
+      >
+        <option value="">Select Type</option>
+        <option value="Movies">Movies</option>
+        <option value="Web Series">Web Series</option>
       </select>
-      <input name="director" value={form.director} onChange={handleChange} className="border p-2" placeholder="Director" />
-      <input name="budget" value={form.budget} onChange={handleChange} className="border p-2" placeholder="Budget" />
-      <input name="location" value={form.location} onChange={handleChange} className="border p-2" placeholder="Location" />
-      <input name="duration" value={form.duration} onChange={handleChange} className="border p-2" placeholder="Duration" />
-      <input name="yearTime" value={form.yearTime} onChange={handleChange} className="border p-2" placeholder="Year/Time" />
-      <button type="submit" className="col-span-2 bg-blue-500 text-white py-2 rounded">Add</button>
+
+      {/* Director */}
+      <input
+        name="director"
+        placeholder="Director"
+        value={formData.director}
+        onChange={handleChange}
+        className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none"
+      />
+
+      {/* Budget */}
+      <input
+        name="budget"
+        placeholder="Budget"
+        value={formData.budget}
+        onChange={handleChange}
+        className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none"
+      />
+
+      {/* Location */}
+      <input
+        name="location"
+        placeholder="Location"
+        value={formData.location}
+        onChange={handleChange}
+        className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none"
+      />
+
+      {/* Duration */}
+      <input
+        name="duration"
+        placeholder="Duration"
+        value={formData.duration}
+        onChange={handleChange}
+        className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none"
+      />
+
+      {/* Year */}
+      <input
+        name="yearTime"
+        placeholder="Year"
+        value={formData.yearTime}
+        onChange={handleChange}
+        className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none"
+      />
+
+      <button
+        type="submit"
+        className="md:col-span-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition"
+      >
+        ➕ Add Media
+      </button>
     </form>
   );
-}
+};
+
+export default MediaForm;

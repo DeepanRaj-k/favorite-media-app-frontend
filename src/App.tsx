@@ -4,12 +4,15 @@ import MediaForm from "./components/MediaForm";
 import MediaTable from "./components/MediaTable";
 import type { MediaItem } from "./types";
 
+// ✅ Use environment variable for API base URL
+const baseUrl = import.meta.env.VITE_API_URL;
+
 const App = () => {
   const [mediaList, setMediaList] = useState<MediaItem[]>([]);
 
   const fetchMedia = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/media");
+      const response = await axios.get(`${baseUrl}/api/media`);
       setMediaList(response.data);
     } catch (error) {
       console.error("Error fetching media:", error);
